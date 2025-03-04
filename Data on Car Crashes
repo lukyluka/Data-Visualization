@@ -1,0 +1,32 @@
+let data = [
+  { state: "New York", fatalities: 1046 },
+  { state: "New Jersey", fatalities: 697 },
+  { state: "Connecticut", fatalities: 380 }
+];
+
+function setup() {
+  createCanvas(600, 600);
+  noLoop();
+}
+
+function draw() {
+  background(255);
+  let totalFatalities = data.reduce((sum, d) => sum + d.fatalities, 0);
+  let startAngle = 0;
+  let colors = ["#FF5733", "#33FF57", "#3357FF"];
+
+  for (let i = 0; i < data.length; i++) {
+    let segmentAngle = (data[i].fatalities / totalFatalities) * TWO_PI;
+    fill(colors[i]);
+    arc(width / 2, height / 2, 300, 300, startAngle, startAngle + segmentAngle, PIE);
+    startAngle += segmentAngle;
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    fill(colors[i]);
+    rect(450, 200 + i * 30, 20, 20);
+    fill(0);
+    textSize(16);
+    text(`${data[i].state}: ${data[i].fatalities}`, 480, 215 + i * 30);
+  }
+}
