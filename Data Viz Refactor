@@ -1,0 +1,45 @@
+class PieChart {
+  constructor(x, y, diameter, data) {
+    this.x = x;
+    this.y = y;
+    this.diameter = diameter;
+    this.data = data;
+    this.colors = ["#FF5733", "#33FF57", "#3357FF"];
+  }
+
+  draw() {
+    let total = this.data.reduce((sum, d) => sum + d.fatalities, 0);
+    let startAngle = 0;
+
+    for (let i = 0; i < this.data.length; i++) {
+      let segmentAngle = (this.data[i].fatalities / total) * TWO_PI;
+      fill(this.colors[i % this.colors.length]);
+      arc(this.x, this.y, this.diameter, this.diameter, startAngle, startAngle + segmentAngle, PIE);
+      startAngle += segmentAngle;
+    }
+
+    // Create the donut hole
+    fill(255);
+    ellipse(this.x, this.y, this.diameter * 0.5);
+
+    for (let i = 0; i < this.data.length; i++) {
+      fill(this.colors[i % this.colors.length]);
+      rect(this.x + this.diameter / 2 + 20, this.y - this.diameter / 3 + i * 30, 20, 20);
+      fill(0);
+      textSize(16);
+      text(`${this.data[i].state}: ${this.data[i].fatalities}`, this.x + this.diameter / 2 + 50, this.y - this.diameter / 3 + i * 30 + 15);
+    }
+  }
+}
+
+let triStateData = [
+  { state: "New York", fatalities: 1046 },
+  { state: "New Jersey", fatalities: 697 },
+  { state: "Connecticut", fatalities: 380 }
+];
+
+function setup() {
+  createCanvas(600, 600);
+  let pieChart = new PieChart(300, 300, 300, triStateData);
+  pieChart.draw();
+}
