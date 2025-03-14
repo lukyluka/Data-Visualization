@@ -1,0 +1,57 @@
+class DonutChart {
+  constructor(x, y, diameter) {
+    this.x = x;
+    this.y = y;
+    this.diameter = diameter;
+    this.data = [];
+    this.colors = ["#FF5733", "#33FF57", "#3357FF", "#F1C40F", "#8E44AD"];
+  }
+
+  addData(label, value) {
+    this.data.push({ label, value });
+  }
+
+  draw() {
+    let totalValue = this.data.reduce((sum, d) => sum + d.value, 0);
+    let startAngle = 0;
+
+    for (let i = 0; i < this.data.length; i++) {
+      let segmentAngle = (this.data[i].value / totalValue) * TWO_PI;
+      fill(this.colors[i % this.colors.length]);
+      arc(this.x, this.y, this.diameter, this.diameter, startAngle, startAngle + segmentAngle, PIE);
+      startAngle += segmentAngle;
+    }
+    
+    // Draw the center circle to create the donut effect
+    fill(255);
+    ellipse(this.x, this.y, this.diameter * 0.5);
+    
+    this.drawLegend();
+  }
+
+  drawLegend() {
+    for (let i = 0; i < this.data.length; i++) {
+      fill(this.colors[i % this.colors.length]);
+      rect(450, 200 + i * 30, 20, 20);
+      fill(0);
+      textSize(16);
+      text(`${this.data[i].label}: ${this.data[i].value}`, 480, 215 + i * 30);
+    }
+  }
+}
+
+let chart;
+
+function setup() {
+  createCanvas(600, 600);
+  chart = new DonutChart(width / 2, height / 2, 300);
+  chart.addData("New York", 1046);
+  chart.addData("New Jersey", 697);
+  chart.addData("Connecticut", 380);
+  noLoop();
+}
+
+function draw() {
+  background(255);
+  chart.draw();
+}
